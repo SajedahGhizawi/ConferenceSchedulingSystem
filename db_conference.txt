@@ -1,0 +1,110 @@
+import sqlite3
+
+# Define connection path (modify if your database file has a different name or location)
+conn_path = "my_conference.db"  # Update if your database file name is different
+
+# Connect to the database
+with sqlite3.connect(conn_path) as conn:
+  cursor = conn.cursor()
+
+  # Table: Users (using double quotes for string literals in ENUM)
+  create_users_table = '''
+  CREATE TABLE Users (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password_hash CHAR(60) NOT NULL,  -- Store hashed passwords securely
+    email VARCHAR(255) NOT NULL UNIQUE,
+    role ENUM("admin", "organizer", "attendee") DEFAULT "attendee"  -- Define user roles
+  );
+  '''
+  cursor.execute(create_users_table)
+
+  # Table: Speakers
+  create_speakers_table = '''
+  CREATE TABLE Speakers (
+    speaker_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    expertise VARCHAR(255),
+    bio TEXT,
+    website VARCHAR(255)
+  );
+  '''
+  cursor.execute(create_speakers_table)
+
+  # Table: Sessions
+  create_sessions_table = '''
+  CREATE TABLE Sessions (
+    session_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    duration INT NOT NULL,  -- Duration in minutes
+    speaker_id INT NOT NULL,
+    FOREIGN KEY (speaker_id) REFERENCES Speakers(speaker_id)  -- Link to Speakers table
+  );
+  '''
+  cursor.execute(create_sessions_table)
+
+  # Table: Rooms
+  create_rooms_table = '''
+  CREATE TABLE Rooms (
+    room_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    capacity INT NOT NULL  -- Maximum number of attendees
+  );
+  '''
+  cursor.execute(create_rooms_table)
+
+  # Table: Schedule (Junction table)
+  create_schedule_table = '''
+  CREATE TABLE Schedule (
+    schedule_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INT NOT NULL,
+    room_id INT NOT NULL,
+    timeslot_id INT NOT NULL,  -- Define timeslot structure if needed
+    FOREIGN KEY (session_id) REFERENCES Sessions(session_id),
+    FOREIGN KEY (room_id) REFERENCES Rooms(room_id)
+  );
+  '''
+  cursor.execute(create_schedule_table)
+
+  # Optional Table: Timeslots (if you have predefined time periods for sessions)
+  create_timeslots_table = ''' (Optional)
+  CREATE TABLE Timeslots (
+    timeslot_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL  -- Descriptive name for the timeslot (e.g., Morning Session)
+  );
+  '''
+  # Uncomment the above block if you want to create the Timeslots table
+  # cursor.execute(create_timeslots_table)
+
+  # Optional Table: Session Tracks/Categories
+  create_session_tracks_table = ''' (Optional)
+  CREATE TABLE SessionTracks (
+    track_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL  -- Name of the session track/category
+  );
+
+  CREATE TABLE SessionTracksLink (
+    session_id INT NOT NULL,
+    track_id INT NOT NULL,
+    FOREIGN KEY (session_id) REFERENCES Sessions(session_id),
+    FOREIGN KEY (track_id) REFERENCES SessionTracks(track_id)
+  );
+  '''
+  # Uncomment the above blocks if you want to create SessionTracks and Link tables
+  # cursor.execute(create_session_tracks_table)
+  # cursor.execute(create_session_tracks_link_table)
+
+  # Optional Table: Session Requirements
+  create_session_requirements_table = ''' (Optional)
+      CREATE TABLE SessionRequirements (
+          requirement_id INTEGER PRIMARY KEY AUTOINCREMENT,
+          description TEXT NOT NULL  -- Description of the session requirement
+      );
+
+      CREATE TABLE SessionRequirementsLink (
+          session_id INT NOT NULL,
+          requirement_id INT NOT NULL,
+          FOREIGN KEY (session_id) REFERENCES Sessions(session_id),
+          FOREIGN KEY (requirement_id) REFERENCES SessionRequirements(requirement_id)
+      );

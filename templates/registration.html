@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration</title>
+<link rel="stylesheet" href="style2.css">
+
+</head>
+<body>
+  <h1>User Registration </h1>
+  <form id="registration-form" action="/register" method="POST">  <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+    <button type="submit" id="register-btn">Login</button>
+
+  
+  <h1>Welcome to My Home Page</h1>
+    <br>
+<a href="about.html">Learn More About Me</a>
+<br>
+<a href="generate_setup.html">Generate Schedule</a>
+<br>
+<a href="View_detailed_schedule.html">detailed schedule</a>
+<br>
+<a href="paper_submission.html">Paper Submission</a>
+<br>
+<a href="conference_setup.html">Conference Setup</a>
+<br>
+<a href="download_reports.html">Download Reports</a>
+<br>
+<a href="generate_schedule.html">Generate Schedule</a>
+<br>
+<a href="review_and_approval.html">Review and Approval</a>
+<br>
+<a href="schedule_view.html">Schedule View</a>
+<br>
+
+  </form>
+
+  <div id="event-details" style="display: none;">  <h1>Event Details </h1>
+    <form id="event-form">  <label for="day">Day:</label>
+      <input type="date" id="day" name="day" required>
+      <br>
+      <label for="starttime">Starting Time:</label>
+      <input type="time" id="starttime" name="time" required>
+      <br>
+      <label for="endtime">Ending Time:</label>
+      <input type="time" id="endtime" name="time" required>
+      <br>
+      <label for="rooms">Rooms:</label>
+      <input type="number" id="rooms" name="rooms" required>
+      <br>
+      <label for="chairs">Number of Chairs:</label>
+      <input type="number" id="chairs" name="chairs" required>
+      <br>
+      <label for="food">Food (Optional):</label>
+      <textarea id="food" name="food" rows="4"></textarea>
+      <br>
+      <button type="submit">Submit Event Details</button>
+    </form>
+  </div>
+
+  <script>
+  // JavaScript code to handle registration and show/hide forms
+  const registerBtn = document.getElementById("register-btn");
+  const eventDetails = document.getElementById("event-details");
+
+  registerBtn.addEventListener("click", function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Simulate registration logic on the client-side (replace with actual validation)
+    console.log("Registration details submitted:", {
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value,
+    });
+
+    // Show event details form and hide registration form
+    document.getElementById("registration-form").style.display = "none";
+    eventDetails.style.display = "block";
+  });
+  </script>
+</body>
+</html>
+
